@@ -1,5 +1,5 @@
 <template>
-	<div class="footer-warp">
+
 		<tabbar >
 			<tabbar-item  selected>
 				<img slot="icon" src="../../assets/demo/icon_nav_button.png">
@@ -22,7 +22,7 @@
 				<span slot="label">个人中心</span>
 			</tabbar-item>
 		</tabbar>
-	</div>
+
 </template>
 
 <script>

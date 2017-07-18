@@ -9,7 +9,9 @@ import Home from './components/HelloFromVux'
 
 
 
-import login from './components/login/regular.vue'
+import login from './components/login/login.vue'
+import regRegular from './components/register/Regular.vue'
+import forget from './components/forget/forget.vue'
 
 
 Vue.use(VueRouter)
@@ -22,6 +24,8 @@ Vue.use(VueRouter)
 const routes = [
     {path: '/', component: Home},
 	{path: '/login/regular', name:'login', component:login},
+	{path: '/register/regular', name:'regRegular', component:regRegular},
+	{path: '/forget/forget', name:'forget', component:forget},
 ]
 
 const router = new VueRouter({
