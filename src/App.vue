@@ -54,5 +54,12 @@
 		.weui-cells:before{
 			border-top: none;
 		}
+		.weui-cells{
+			font-size: 16px;
+		}
+		.weui-cell{
+			padding-left: 0;
+			left: 0;
+		}
 	}
 </style>

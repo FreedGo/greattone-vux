@@ -22,7 +22,7 @@
 				<!--<flexbox-item><div class="flex-demo"></div></flexbox-item>-->
 				<flexbox-item><div class="flex-demo"></div></flexbox-item>
 				<flexbox-item><div class="flex-demo"><router-link to="/register/regular">用户注册</router-link></div></flexbox-item>丨
-				<flexbox-item><div class="flex-demo"><router-link to="/forget/forget">忘记密码</router-link></div></flexbox-item>
+				<flexbox-item><div class="flex-demo"><router-link to="/forget/forgetList">忘记密码</router-link></div></flexbox-item>
 				<flexbox-item><div class="flex-demo"></div></flexbox-item>
 				<!--<flexbox-item><div class="flex-demo"></div></flexbox-item>-->
 			</flexbox>
