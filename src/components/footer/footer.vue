@@ -1,5 +1,4 @@
 <template>
-
 		<tabbar >
 			<tabbar-item  selected>
 				<img slot="icon" src="../../assets/demo/icon_nav_button.png">
@@ -17,7 +16,7 @@
 				<img slot="icon" src="../../assets/demo/icon_nav_cell.png">
 				<span slot="label">我的动态</span>
 			</tabbar-item>
-			<tabbar-item badge="2" link="/login/regular">
+			<tabbar-item badge="2" link="/session/login">
 				<img slot="icon" src="../../assets/demo/icon_nav_cell.png">
 				<span slot="label">个人中心</span>
 			</tabbar-item>

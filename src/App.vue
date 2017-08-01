@@ -1,19 +1,5 @@
 <template>
-	<div  style="height: 100%;">
-		<drawer
-			width="200px;"
-			show.sync="false"
-			show-mode="push"
-			placement="left"
-			:drawer-style="{'background-color':'#35495e', width: '200px'}">
-			<view-box ref="viewBox">
-				<!--<heads :tit="titleContent"></heads>-->
-				<router-view></router-view>
-
-			<foot ></foot>
-			</view-box>
-		</drawer>
-	</div>
+	<router-view></router-view>
 </template>
 
 <script>
@@ -40,7 +26,7 @@
 
 <style lang="less">
 	@import '~vux/src/styles/reset.less';
-
+	@mainColor:#f44b50;
 	html,body {
 		background-color: #fff;
 		height: 100%;
@@ -48,18 +34,20 @@
 	}
 	body {
 		background-color: #fff;
+		.weui-cell{
+			padding-left: 0;
+			left: 0!important;
+		}
 	}
 	.main{
 		margin: 0 20px;
 		.weui-cells:before{
 			border-top: none;
+
 		}
 		.weui-cells{
 			font-size: 16px;
 		}
-		.weui-cell{
-			padding-left: 0;
-			left: 0;
-		}
+
 	}
 </style>

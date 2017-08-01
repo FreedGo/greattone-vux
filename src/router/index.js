@@ -1,21 +1,33 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Hello from '@/components/Hello'
-import login from '@/components/login/regular'
+import Home from '@/components/home/index.vue'
 
-Vue.use(Router)
+import session from '@/components/session/index.vue'
+import login from '@/components/session/login.vue'
+import regRegular from '@/components/session/regular.vue'
+import forgetList from '@/components/session/forgetList.vue'
+import forget from '@/components/session/forget.vue'
+import agreement from '@/components/session/agreement.vue'
 
-export default new Router({
+Vue.use(Router);
+
+const router = new Router({
 	routes: [
+		{path: '/', component: Home},
 		{
-			path     : '/',
-			name     : 'Hello',
-			component: Hello
-		},
-		{
-			path     : '/login/regular',
-			name     : 'login',
-			component: login
+			path: '/session',
+			name: 'session',
+			component: session,
+			redirect:'/session/login',
+			children: [
+				{path: '/session/agreement', name: 'agreement', component: agreement},
+				{path: '/session/login', name: 'login', component: login},
+				{path: '/session/regRegular', name: 'regRegular', component: regRegular},
+				{path: '/session/forgetList', name: 'forgetList', component: forgetList},
+				{path: '/session/forget', name: 'forget', component: forget}
+			]
 		},
 	]
 })
+
+export default router;

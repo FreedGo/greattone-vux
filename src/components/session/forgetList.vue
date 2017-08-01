@@ -12,7 +12,7 @@
 					<!--</div>-->
 				<!--</cell>-->
 
-				<cell is-link link="/forget/forget">
+				<cell is-link link="/session/forget">
 
 					<div slot="title">
 						<span>
