@@ -69,9 +69,8 @@
 						this.login_showmessage = res.data.info;
 						router.replace('/')
 					}
-
 				}, res => {
-					// error callback
+					this.login_showmessage = "网络错误，请稍后重试";
 				});
 			}
 		},

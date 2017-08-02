@@ -8,7 +8,7 @@ import regRegular from '@/components/session/regular.vue'
 import forgetList from '@/components/session/forgetList.vue'
 import forget from '@/components/session/forget.vue'
 import agreement from '@/components/session/agreement.vue'
-
+import test from '@/components/session/test.vue'
 Vue.use(Router);
 
 const router = new Router({
@@ -24,7 +24,8 @@ const router = new Router({
 				{path: '/session/login', name: 'login', component: login},
 				{path: '/session/regRegular', name: 'regRegular', component: regRegular},
 				{path: '/session/forgetList', name: 'forgetList', component: forgetList},
-				{path: '/session/forget', name: 'forget', component: forget}
+				{path: '/session/forget', name: 'forget', component: forget},
+				{path: '/session/test', name: 'test', component: test}
 			]
 		},
 	]
