@@ -1,5 +1,5 @@
 <template>
-	<div class="header-warp">
+	<div class="header-warp" >
 		<x-header  :left-options="{backText: ''}">{{tit}}</x-header>
 	</div>
 </template>

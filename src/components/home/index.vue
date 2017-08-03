@@ -6,7 +6,7 @@
 			show-mode="push"
 			placement="left"
 			:drawer-style="{'background-color':'#35495e', width: '200px'}">
-			<view-box ref="viewBox">
+			<view-box ref="viewBox">1
 				<!--<heads :tit="titleContent"></heads>-->
 				<router-view></router-view>
 

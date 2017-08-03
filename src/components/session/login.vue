@@ -20,7 +20,7 @@
 			<flexbox :gutter="0" class="other-menu">
 				<!--<flexbox-item><div class="flex-demo"></div></flexbox-item>-->
 				<flexbox-item><div class="flex-demo"></div></flexbox-item>
-				<flexbox-item><div class="flex-demo"><router-link to="/session/regRegular">用户注册</router-link></div></flexbox-item>丨
+				<flexbox-item><div class="flex-demo"><router-link to="/session/regSelect">用户注册</router-link></div></flexbox-item>丨
 				<flexbox-item><div class="flex-demo"><router-link to="/session/forgetList">忘记密码</router-link></div></flexbox-item>
 				<flexbox-item><div class="flex-demo"></div></flexbox-item>
 				<!--<flexbox-item><div class="flex-demo"></div></flexbox-item>-->
