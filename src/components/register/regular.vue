@@ -21,8 +21,8 @@
 							<x-input class="weui-vcode" :max="6"  :min="6" novalidate :icon-type="userComfirm.Testcfm" placeholder="请输入验证码" v-model="user.smscode" @on-blur="checkSmsCode">
 								<x-button   :disabled="sendDisabled"  action-type="button" slot="right"  @click.native="sendMsgCode"   type="primary" mini>{{sendBtnTitle}}</x-button>
 							</x-input>
-							<x-input :max="16"  :min="6" type="password" title="" placeholder="密码6~16位英文，符号和数字" required show-clear v-model="user.password"></x-input>
-							<x-input :max="16"  :min="6" type="password" title="" placeholder="确认密码" required show-clear :equal-with="user.password" v-model="user.repassword"></x-input>
+							<x-input :max="16"  :min="6" type="password" novalidate :iconType="userComfirm.Passcfm" title="" placeholder="密码6~16位英文，符号和数字" required show-clear v-model="user.password" @on-blur="checkPass"></x-input>
+							<x-input :max="16"  :min="6" type="password" novalidate :iconType="userComfirm.RePasscfm" title="" placeholder="确认密码" required show-clear v-model="user.repassword"></x-input>
 							<x-input type="hidden" title=""   show-clear disabled v-model="show_regmsg"></x-input>
 							<check-icon :value.sync="agree">我已阅读 <router-link to="/agreement/index">《注册协议》</router-link></check-icon>
 							<br>
@@ -182,7 +182,6 @@
 						content: '请输入正确格式的手机号',
 					});
 				}else{
-
 					//拼接参数及
 					let params = new URLSearchParams();
 					params.append('api','user/checkphone');
@@ -262,7 +261,6 @@
 				}
 			},//检查用户名是否可用
 			sendMsgCode(){
-
 				let Namecfm = this.userComfirm.Namecfm;
 				if (Namecfm == 'success'){
 					this.disableSendBtn();
@@ -349,6 +347,15 @@
 						})
 					})
 				}
+			},
+			checkPass(){
+			    let pass = this.user.password;
+			    let re = /^[\w\S]{6,16}$/.test(pass);
+			    if (re){
+			        this.userComfirm.Passcfm = 'success';
+				}else{
+                    this.userComfirm.Passcfm = 'error';
+                }
 			}
 		}
 	}
