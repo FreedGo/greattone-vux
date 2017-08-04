@@ -17,7 +17,7 @@ Vue.use(Router);
 
 const router = new Router({
 	routes: [
-		{path: '/', component: Home},
+		{path: '/', component: Home,name: 'Home',},
 		{
 			path: '/session',
 			name: 'session',

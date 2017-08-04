@@ -3,24 +3,14 @@
 </template>
 
 <script>
-	import foot from './components/footer/footer.vue'
-	import heads from './components/header/header.vue'
-//	import login from './components/login/login.vue'
-	import { Drawer,ViewBox } from 'vux'
 
 	export default {
 		name: 'app',
 		data(){
 			return{
 				msg:'好琴声',
-				titleContent:'好琴声主页'
 			}
 		},
-		components:{
-			foot,heads,
-			Drawer,
-			ViewBox
-		}
 	}
 </script>
 
@@ -30,7 +20,7 @@
 	html,body {
 		background-color: #fff;
 		height: 100%;
-		overflow-x: hidden;
+		/*overflow-x: hidden;*/
 	}
 	body {
 		background-color: #fff;

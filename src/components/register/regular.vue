@@ -8,18 +8,18 @@
 				<div class="tab-swiper vux-center">
 					<form @submit.prevent="register">
 						<group>
-							<x-input :max="16" :min="6" :is-type="rep.repname"  :class="{'area-num-picker':true,'weui-cell_warn':!userComfirm.isNamecfm}" placeholder="用户名6~16位汉字，字符及数字" required show-clear v-model="user.username" @on-blur="checkname"></x-input>
+							<x-input :max="16" :min="6" :is-type="rep.repName" novalidate :iconType="userComfirm.Namecfm" :class="{'area-num-picker':true,}" placeholder="用户名6~16位汉字，字符及数字" required show-clear v-model="user.username"  @on-blur="checkname" ></x-input>
 							<!--<popup-picker  :data="list1" v-model="areaNum" ></popup-picker >-->
 							<flexbox :gutter="0" class="phone-warp">
 								<flexbox-item span="110px">
 									<popup-picker value-text-align="center"  :data="areaList" v-model="areanum" @on-change="completePhone" ></popup-picker >
 								</flexbox-item>
 								<flexbox-item >
-									<x-input :max="20" :min="6" type="tel" :is-type="rep.repPhone" :areanum="getAreaNum" class="weui-vcode" placeholder="手机号" v-model="user.phonenum" @on-change="completePhone"></x-input>
+									<x-input :max="20" :min="6" type="tel" novalidate :iconType="userComfirm.Phonecfm" :areanum="getAreaNum" class="weui-vcode" placeholder="手机号" v-model="user.phonenum" @on-blur="completePhone" @on-change="disableSendBtn"></x-input>
 								</flexbox-item>
 							</flexbox>
-							<x-input class="weui-vcode" :max="6"  :min="6" :is-type="rep.repTestNum" placeholder="请输入验证码" v-model="user.smscode">
-								<x-button  :disabled="isSend"  action-type="button" slot="right"   type="primary" mini>发送验证码</x-button>
+							<x-input class="weui-vcode" :max="6"  :min="6" novalidate :icon-type="userComfirm.Testcfm" placeholder="请输入验证码" v-model="user.smscode" @on-blur="checkSmsCode">
+								<x-button   :disabled="sendDisabled"  action-type="button" slot="right"  @click.native="sendMsgCode"   type="primary" mini>{{sendBtnTitle}}</x-button>
 							</x-input>
 							<x-input :max="16"  :min="6" type="password" title="" placeholder="密码6~16位英文，符号和数字" required show-clear v-model="user.password"></x-input>
 							<x-input :max="16"  :min="6" type="password" title="" placeholder="确认密码" required show-clear :equal-with="user.password" v-model="user.repassword"></x-input>
@@ -41,25 +41,20 @@
 	import Vue from 'vue';
 	import heads from '../header/header.vue';
 	import router from '../../router/index.js';
-	import {XInput, Group,PopupPicker ,Picker,XButton, Flexbox, FlexboxItem, Divider,CheckIcon  } from 'vux'
-	import { Sticky ,AjaxPlugin,AlertPlugin   } from 'vux'
+	import {XInput, Group,PopupPicker ,Picker,XButton, Flexbox, FlexboxItem, Divider,CheckIcon,AjaxPlugin,AlertPlugin  } from 'vux'
 	Vue.use(AlertPlugin  );
 	const list = ['注册', '手机快捷注册'];
 	export default {
 		name      : 'subapp',
 		computed:{
 			getAreaNum:{
-//				this.user.areanum = this.areanum[0].match(/\d+/g)[0]
-//				return this.areanum[0].match(/\d+/g)[0];
 				get: function () {
 					console.log(this)
 					return this.areanum[0].match(/\d+/g)[0];
 				},
-				// setter
 				set: function (value) {
 					this.user.areanum = this.areanum[0].match(/\d+/g)[0];
 				}
-
 			}
 		},
 		data(){
@@ -68,25 +63,21 @@
 				titleContent: '注册',
 				list2       : list,
 				isSend      : true,
-				user        : {                //用户信息
-					username  : '',
-					password  : '',
-					repassword: '',
-					areanum   : '86',
-					phonenum  : '',
-					smscode   : '',
-					groupid   : this.$route.params.groupid||1
+				user        : {
+					username: '', password: '', repassword: '', areanum: '86', phonenum: '', smscode: '',
+					groupid : this.$route.params.groupid || 1
 
 				},
 				userComfirm:{
-					isNamecfm:false,
-					isPhonecfm:false,
-					isTestcfm:false,
-					isPasscfm:false,
-					isRePasscfm:false,
+					Namecfm  : '',
+					Phonecfm : '',
+					Testcfm  : '',
+					Passcfm  : '',
+					RePasscfm: '',
 				},
 				rep:{
 					repName:function (value) {
+						console.log(1);
 						let tips = '用户名必须为6-16位汉字,字母和数字，不能出现特殊符号';
 						let re = /^[\u4E00-\u9FFFa-zA-Z0-9]+$/g.test(value);
 						if (!re){
@@ -116,7 +107,9 @@
 					}
 				},
 				show_regmsg : '',               //错误提示
-				index       : 0,
+				sendDisabled: true,             //发送验证码按钮是否变暗
+				sendBtnTitle: '发送验证码',       //发送验证码按钮文字内容
+				sendBtnTimer: '',               //发送验证码按钮文字内容
 				agree       : false,            //是否同意注册协议
 				areanum     : ['大陆+86'],
 				areaList    : [                 //区域列表
@@ -126,19 +119,7 @@
 			}
 		},
 		components: {
-			heads,
-			XInput,
-			Group,
-			XButton,
-			Flexbox,
-			FlexboxItem,
-			Divider,
-			PopupPicker ,
-			Picker,
-			Sticky,
-			CheckIcon,
-			AjaxPlugin,
-			AlertPlugin
+			heads, XInput, Group, XButton, Flexbox, FlexboxItem, Divider, PopupPicker , Picker, CheckIcon, AjaxPlugin, AlertPlugin,
 		},
 		methods   : {
 			register(){
@@ -192,42 +173,181 @@
 					re = /^1[0-9]\d{9}$/g.test(this.user.phonenum);
 				}else {//大陆外手机号
 					re = /^\d+$/g.test(this.user.phonenum);
-					console.log(1)
 				}
 				if (!re){
-					this.isSend = true;
+					this.userComfirm.Phonecfm = 'error';
+					this.sendDisabled  = true ;
+					this.$vux.alert.show({
+						title: '提示',
+						content: '请输入正确格式的手机号',
+					});
 				}else{
-					this.isSend = false;
+
+					//拼接参数及
+					let params = new URLSearchParams();
+					params.append('api','user/checkphone');
+					params.append('phone',this.user.phonenum);
+					this.$http.post(this.apiurl,params).then(res => {
+						if (res.status === 200&&res.data.err_msg !== 'success'){
+							this.userComfirm.Phonecfm = 'error';
+							tips = res.data.info;
+							this.$vux.alert.show({
+								title: '提示',
+								content: tips,
+							});
+							this.sendDisabled  = true;
+						}else{
+							this.userComfirm.Phonecfm = 'success';
+							this.sendDisabled  = false;
+						}
+					}, res => {
+						this.userComfirm.Phonecfm = 'error';
+						tips = res;
+						this.sendDisabled  = true;
+						this.$vux.alert.show({
+							title: '提示',
+							content: tips,
+						})
+					})
 				}
-			},
+			},//检测手机号是否可以用
+			disableSendBtn(){
+				this.sendDisabled  = true ;
+			},//让发送验证码按钮禁用
 			checkname(){
-				let tips = '用户名必须为6-16位汉字,字母和数字，不能出现特殊符号';
-				let re = /^[\u4E00-\u9FFFa-zA-Z0-9]{6,16}$/g.test(this.user.username);
-				if (!re){
+				let tips ;
+				let username = this.user.username;                                                             //获取用户名
+				let length1 = username.match(/[\u4E00-\u9FFF]/g)?username.match(/[\u4E00-\u9FFF]/g).length*2:0;//用户名中，中文长度
+				let length2 = username.match(/[a-zA-Z0-9]/g)? username.match(/[a-zA-Z0-9]/g).length:0;         //用户名中英文长度
+				let re = /[\u4E00-\u9FFFa-zA-Z0-9]/g.test(username);                                           //检测用户名中有没有非法字符
+
+				if (length1+length2<6||length1+length2>16){
+					tips = '用户名必须为6-16位';
 					this.$vux.alert.show({
 						title: '提示',
 						content: tips,
-					})
+					});
+					this.userComfirm.Namecfm = 'error';
+				}else if (!re){
+					tips='用户名必须汉字,字母和数字，不能出现特殊符号';
+					this.$vux.alert.show({
+						title: '提示',
+						content: tips,
+					});
+					this.userComfirm.Namecfm = 'error';
 				}else{
+					//拼接参数及
 					let params = new URLSearchParams();
 					params.append('api','user/checkuser');
 					params.append('username',this.user.username);
-
 					this.$http.post(this.apiurl,params).then(res => {
-						if (res.status === 200&&res.data.err_msg === 'error'){
-							this.userComfirm.isNamecfm = false;
+						if (res.status === 200&&res.data.err_msg !== 'success'){
+							this.userComfirm.Namecfm = 'error';
 							tips = res.data.info;
 							this.$vux.alert.show({
 								title: '提示',
 								content: tips,
 							})
 						}else{
-							this.userComfirm.isNamecfm = true;
-							console.log('right')
+							this.userComfirm.Namecfm = 'success';
 						}
 					}, res => {
-						this.login_showmessage = "网络错误，请稍后重试";
+						this.userComfirm.Namecfm = 'error';
+						tips = res;
+						this.$vux.alert.show({
+							title: '提示',
+							content: tips,
+						})
 					});
+				}
+			},//检查用户名是否可用
+			sendMsgCode(){
+
+				let Namecfm = this.userComfirm.Namecfm;
+				if (Namecfm == 'success'){
+					this.disableSendBtn();
+					//拼接参数及
+					let params = new URLSearchParams();
+					params.append('api','user/sendSms');
+					params.append('username',this.user.username);
+					params.append('Area','00'+this.getAreaNum);
+					params.append('phone',this.user.phonenum);
+
+					this.$http.post(this.apiurl,params).then(res => {
+						if (false && res.status === 200&&res.data.err_msg !== 'success'){
+							tips = res.data.info;
+							this.$vux.alert.show({
+								title: '提示',
+								content: tips,
+							})
+						}else{
+							let sendTime = 60;
+							let timer_this = this;
+							function changeSendBtn () {
+								if (sendTime<0){
+									timer_this.sendBtnTitle = '发送验证码';
+									clearInterval(timer_this.sendBtnTimer);
+									return false;
+								}
+								timer_this.sendBtnTitle = sendTime+'s';
+								sendTime--;
+							}
+							this.sendBtnTimer = setInterval(changeSendBtn,1000);
+						}
+						this.sendDisabled = false ; //让发送按钮重新可以点击
+					}, res => {
+						this.userComfirm.Namecfm = 'error';
+						tips = res;
+						this.$vux.alert.show({
+							title: '提示',
+							content: tips,
+						});
+						this.sendDisabled = false ; //让发送按钮重新可以点击
+					});
+				}else{
+					this.$vux.alert.show({
+						title: '提示',
+						content: '请先填写正确的用户名',
+					});
+				}
+			},
+			checkSmsCode(){
+				let smsCode = this.user.smscode;
+				let re = /^\d{6}$/.test(smsCode);
+				let tips = '验证码为6位数字，请重新输入';
+				if (!re){
+					this.$vux.alert.show({
+						title: '提示',
+						content: tips,
+					});
+				}else{
+
+					//拼接参数及
+					let params = new URLSearchParams();
+					params.append('api','user/checkcode');
+					params.append('phone',this.user.phonenum);
+					params.append('smscode',smsCode);
+
+					this.$http.post(this.apiurl,params).then(res => {
+						if (res.status === 200&&res.data.err_msg !== 'success'){
+							this.userComfirm.Testcfm = 'error';
+							tips = res.data.info;
+							this.$vux.alert.show({
+								title: '提示',
+								content: tips,
+							});
+						}else{
+							this.userComfirm.Testcfm = 'success';
+						}
+					}, res => {
+						this.userComfirm.Phonecfm = 'error';
+						tips = res;
+						this.sendDisabled  = true;
+						this.$vux.alert.show({
+							title: '提示',
+							content: tips,
+						})
+					})
 				}
 			}
 		}
