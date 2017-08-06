@@ -22,13 +22,12 @@
 								<x-button   :disabled="sendDisabled"  action-type="button" slot="right"  @click.native="sendMsgCode"   type="primary" mini>{{sendBtnTitle}}</x-button>
 							</x-input>
 							<x-input :max="16"  :min="6" type="password" novalidate :iconType="userComfirm.Passcfm" title="" placeholder="密码6~16位英文，符号和数字" required show-clear v-model="user.password" @on-blur="checkPass"></x-input>
-							<x-input :max="16"  :min="6" type="password" novalidate :iconType="userComfirm.RePasscfm" title="" placeholder="确认密码" required show-clear v-model="user.repassword"></x-input>
+							<x-input :max="16"  :min="6" type="password" novalidate :iconType="userComfirm.RePasscfm" title="" placeholder="确认密码" required show-clear v-model="user.repassword" @on-blur="checkRePass"></x-input>
 							<x-input type="hidden" title=""   show-clear disabled v-model="show_regmsg"></x-input>
-							<check-icon :value.sync="agree">我已阅读 <router-link to="/agreement/index">《注册协议》</router-link></check-icon>
+							<check-icon :value.sync="userComfirm.Agreecfm">我已阅读 <router-link to="/agreement/index">《注册协议》</router-link></check-icon>
 							<br>
 							<br>
 							<x-button action-type="submit" type="primary">注册</x-button>
-							<p>{{user.groupid}}</p>
 						</group>
 					</form>
 				</div>
@@ -44,12 +43,12 @@
 	import {XInput, Group,PopupPicker ,Picker,XButton, Flexbox, FlexboxItem, Divider,CheckIcon,AjaxPlugin,AlertPlugin  } from 'vux'
 	Vue.use(AlertPlugin  );
 	const list = ['注册', '手机快捷注册'];
+    const apiurl = 'http://m.greattone.net/e/appapi/';
 	export default {
 		name      : 'subapp',
 		computed:{
 			getAreaNum:{
 				get: function () {
-					console.log(this)
 					return this.areanum[0].match(/\d+/g)[0];
 				},
 				set: function (value) {
@@ -74,6 +73,7 @@
 					Testcfm  : '',
 					Passcfm  : '',
 					RePasscfm: '',
+					Agreecfm : false
 				},
 				rep:{
 					repName:function (value) {
@@ -114,8 +114,7 @@
 				areanum     : ['大陆+86'],
 				areaList    : [                 //区域列表
 					['大陆+86', '台湾+886', '香港+852', '澳门+853', '新加坡+65', '美国+1']
-				],
-				apiurl:'http://m.greattone.net/e/appapi/'
+				]
 			}
 		},
 		components: {
@@ -123,7 +122,37 @@
 		},
 		methods   : {
 			register(){
-				if (!this.agree){
+				if(!this.userComfirm.Namecfm){
+                    this.$vux.alert.show({
+                        title: '提示',
+                        content: '用户名填写错误,请重新填写'
+                    });
+                    return false;
+                }else if (!this.userComfirm.Phonecfm){
+                    this.$vux.alert.show({
+                        title: '提示',
+                        content: '手机号填写错误,请重新填写'
+                    });
+                    return false;
+                }else if (!this.userComfirm.Testcfm){
+                    this.$vux.alert.show({
+                        title: '提示',
+                        content: '短信验证码填写错误,请重新填写'
+                    });
+                    return false;
+                }else if (!this.userComfirm.Passcfm){
+                    this.$vux.alert.show({
+                        title: '提示',
+                        content: '密码填写错误,请重新填写'
+                    });
+                    return false;
+                }else if (!this.userComfirm.RePasscfm){
+                    this.$vux.alert.show({
+                        title: '提示',
+                        content: '重复密码填写错误,请重新填写'
+                    });
+                    return false;
+                }else if (!this.userComfirm.Agreecfm){
 					this.showPluginAuto();
 					return false;
 				};
@@ -136,7 +165,7 @@
 				params.append('smscode',this.user.smscode);
 				params.append('groupid',this.user.groupid);
 
-				this.$http.post('apiurl',params).then(res => {
+				this.$http.post(apiurl,params).then(res => {
 					if (res.status === 200&&res.data.err_msg === 'error'){
 						this.login_showmessage = res.data.info
 					}else{
@@ -186,7 +215,7 @@
 					let params = new URLSearchParams();
 					params.append('api','user/checkphone');
 					params.append('phone',this.user.phonenum);
-					this.$http.post(this.apiurl,params).then(res => {
+					this.$http.post(apiurl,params).then(res => {
 						if (res.status === 200&&res.data.err_msg !== 'success'){
 							this.userComfirm.Phonecfm = 'error';
 							tips = res.data.info;
@@ -239,7 +268,7 @@
 					let params = new URLSearchParams();
 					params.append('api','user/checkuser');
 					params.append('username',this.user.username);
-					this.$http.post(this.apiurl,params).then(res => {
+					this.$http.post(apiurl,params).then(res => {
 						if (res.status === 200&&res.data.err_msg !== 'success'){
 							this.userComfirm.Namecfm = 'error';
 							tips = res.data.info;
@@ -263,15 +292,15 @@
 			sendMsgCode(){
 				let Namecfm = this.userComfirm.Namecfm;
 				if (Namecfm == 'success'){
-					this.disableSendBtn();
-					//拼接参数及
+                    this.sendDisabled = true ; //让发送按钮禁用
+                    //拼接参数及
 					let params = new URLSearchParams();
 					params.append('api','user/sendSms');
 					params.append('username',this.user.username);
 					params.append('Area','00'+this.getAreaNum);
 					params.append('phone',this.user.phonenum);
 
-					this.$http.post(this.apiurl,params).then(res => {
+					this.$http.post(apiurl,params).then(res => {
 						if (false && res.status === 200&&res.data.err_msg !== 'success'){
 							tips = res.data.info;
 							this.$vux.alert.show({
@@ -326,7 +355,7 @@
 					params.append('phone',this.user.phonenum);
 					params.append('smscode',smsCode);
 
-					this.$http.post(this.apiurl,params).then(res => {
+					this.$http.post(apiurl,params).then(res => {
 						if (res.status === 200&&res.data.err_msg !== 'success'){
 							this.userComfirm.Testcfm = 'error';
 							tips = res.data.info;
@@ -356,7 +385,17 @@
 				}else{
                     this.userComfirm.Passcfm = 'error';
                 }
-			}
+			},
+            checkRePass(){
+                let repass = this.user.repassword;
+                let pass = this.user.password;
+                if (this.userComfirm.Passcfm&&repass === pass){
+                    this.userComfirm.RePasscfm = 'success';
+                }else{
+                    this.userComfirm.RePasscfm = 'error';
+                }
+            }
+
 		}
 	}
 </script>
