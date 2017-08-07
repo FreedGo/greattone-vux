@@ -1,18 +1,18 @@
 <template>
-	<div  style="height: 100%;">
+	<div id="subapp"  style="height: 100%;">
 		<drawer
 			width="200px;"
 			show.sync="false"
 			show-mode="push"
 			placement="left"
 			:drawer-style="{'background-color':'#35495e', width: '200px'}">
-			<heads :tit="titleContent"></heads>
 			<view-box ref="viewBox">
-				<!--<heads :tit="titleContent"></heads>-->
-				<!--<router-view></router-view>-->
+				<heads :tit="titleContent"></heads>
 
-				<foot ></foot>
+				<!--<heads :tit="titleContent"></heads>-->
+				<router-view></router-view>
 			</view-box>
+			<foot ></foot>
 		</drawer>
 	</div>
 	<!--<router-view></router-view>-->
@@ -25,7 +25,7 @@
 	import { Drawer,ViewBox } from 'vux'
 
 	export default {
-		name: 'app',
+		name: 'subapp',
 		data(){
 			return{
 				msg:'好琴声',

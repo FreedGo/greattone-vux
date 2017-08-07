@@ -17,7 +17,7 @@ Vue.use(Router);
 
 const router = new Router({
 	routes: [
-		{path: '/', component: Home,name: 'Home',},
+		{path: '/', component: Home,name: 'Home'},
 		{
 			path: '/session',
 			name: 'session',
@@ -47,12 +47,7 @@ router.beforeEach((to,from,next)=>{
 	}else if (to.path.match(/^\/session/) == '/session'){
 		next()
 	}else {
-		// if (cookie.get('PHPSESSID')){
-		// 	next()
-		// }else{
-		// 	alert('您还没有登录');
-		// 	router.replace('/login')
-		// }
+		next()
 	}
 })
 

@@ -3,7 +3,6 @@
 </template>
 
 <script>
-
 	export default {
 		name: 'app',
 		data(){
@@ -15,6 +14,7 @@
 </script>
 
 <style lang="less">
+
 	@import '~vux/src/styles/reset.less';
 	@mainColor:#f44b50;
 	html,body {

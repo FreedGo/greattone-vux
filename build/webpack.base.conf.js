@@ -22,6 +22,8 @@ let webpackConfig = {
       ? config.build.assetsPublicPath
       : config.dev.assetsPublicPath
   },
+  externals: {
+  },
   resolve: {
     extensions: ['.js', '.vue', '.json'],
     alias: {
@@ -67,6 +69,5 @@ module.exports = vuxLoader.merge(webpackConfig, {
       'vux-ui',
       'progress-bar',
       'duplicate-style'
-
   ]
 })

@@ -8,6 +8,7 @@
 				<div class="tab-swiper vux-center">
 					<form @submit.prevent="register">
 						<group>
+
 							<x-input :max="16" :min="6" :is-type="rep.repName" novalidate :iconType="userComfirm.Namecfm" :class="{'area-num-picker':true,}" placeholder="用户名6~16位汉字，字符及数字" required show-clear v-model="user.username"  @on-blur="checkname" ></x-input>
 							<!--<popup-picker  :data="list1" v-model="areaNum" ></popup-picker >-->
 							<flexbox :gutter="0" class="phone-warp">
@@ -19,15 +20,24 @@
 								</flexbox-item>
 							</flexbox>
 							<x-input class="weui-vcode" :max="6"  :min="6" novalidate :icon-type="userComfirm.Testcfm" placeholder="请输入验证码" v-model="user.smscode" @on-blur="checkSmsCode">
-								<x-button   :disabled="sendDisabled"  action-type="button" slot="right"  @click.native="sendMsgCode"   type="primary" mini>{{sendBtnTitle}}</x-button>
+								<x-button   :disabled="sendDisabled"   action-type="button" slot="right"  @click.native="sendMsgCode"   type="primary" mini>{{sendBtnTitle}}</x-button>
 							</x-input>
 							<x-input :max="16"  :min="6" type="password" novalidate :iconType="userComfirm.Passcfm" title="" placeholder="密码6~16位英文，符号和数字" required show-clear v-model="user.password" @on-blur="checkPass"></x-input>
 							<x-input :max="16"  :min="6" type="password" novalidate :iconType="userComfirm.RePasscfm" title="" placeholder="确认密码" required show-clear v-model="user.repassword" @on-blur="checkRePass"></x-input>
+							<x-address   v-model="user.address" :title="addressTitle" :list="addressData" :raw-value="true"  ></x-address>
 							<x-input type="hidden" title=""   show-clear disabled v-model="show_regmsg"></x-input>
-							<check-icon :value.sync="userComfirm.Agreecfm">我已阅读 <router-link to="/agreement/index">《注册协议》</router-link></check-icon>
+							<check-icon :value.sync="userComfirm.Agreecfm">我已阅读 <router-link to="/agreement/index">《好琴声用户协议》</router-link></check-icon>
 							<br>
 							<br>
 							<x-button action-type="submit" type="primary">注册</x-button>
+							<flexbox :gutter="0" class="other-menu">
+								<!--<flexbox-item><div class="flex-demo"></div></flexbox-item>-->
+								<flexbox-item><div class="flex-demo"></div></flexbox-item>
+								<flexbox-item><div class="flex-demo"><router-link to="/session/login">前往登录</router-link></div></flexbox-item>丨
+								<flexbox-item><div class="flex-demo"><router-link to="/session/forgetList">忘记密码</router-link></div></flexbox-item>
+								<flexbox-item><div class="flex-demo"></div></flexbox-item>
+								<!--<flexbox-item><div class="flex-demo"></div></flexbox-item>-->
+							</flexbox>
 						</group>
 					</form>
 				</div>
@@ -40,8 +50,11 @@
 	import Vue from 'vue';
 	import heads from '../header/header.vue';
 	import router from '../../router/index.js';
-	import {XInput, Group,PopupPicker ,Picker,XButton, Flexbox, FlexboxItem, Divider,CheckIcon,AjaxPlugin,AlertPlugin  } from 'vux'
-	Vue.use(AlertPlugin  );
+	import {XInput, Group,PopupPicker ,Picker,XButton, Flexbox, FlexboxItem, Divider,CheckIcon,AjaxPlugin,AlertPlugin,ToastPlugin,XAddress,ChinaAddressV3Data     } from 'vux'
+
+
+	Vue.use(AlertPlugin);
+	Vue.use(ToastPlugin);
 	const list = ['注册', '手机快捷注册'];
     const apiurl = 'http://m.greattone.net/e/appapi/';
 	export default {
@@ -62,9 +75,11 @@
 				titleContent: '注册',
 				list2       : list,
 				isSend      : true,
+				addressData : ChinaAddressV3Data,//三级地址联动数据
+				addressTitle:'请选择地址',
 				user        : {
 					username: '', password: '', repassword: '', areanum: '86', phonenum: '', smscode: '',
-					groupid : this.$route.params.groupid || 1
+					groupid : this.$route.params.groupid || 1,address:['上海市', '市辖区', '闵行区']
 
 				},
 				userComfirm:{
@@ -117,8 +132,18 @@
 				]
 			}
 		},
+		mounted(){
+//			this.$vux.toast.show({
+//				text: '注册成功',
+//				time:2000,
+//				isShowMask:true,
+//				onHide () {
+//
+//				}
+//			});
+		},
 		components: {
-			heads, XInput, Group, XButton, Flexbox, FlexboxItem, Divider, PopupPicker , Picker, CheckIcon, AjaxPlugin, AlertPlugin,
+			heads, XInput, Group, XButton, Flexbox, FlexboxItem, Divider, PopupPicker , Picker, CheckIcon, AjaxPlugin, AlertPlugin,XAddress,ChinaAddressV3Data
 		},
 		methods   : {
 			register(){
@@ -156,7 +181,7 @@
 					this.showPluginAuto();
 					return false;
 				};
-				this.show_regmsg="正在提交";
+
 				let params = new URLSearchParams();
 				params.append('api','user/createUser');
 				params.append('username',this.user.username);
@@ -165,15 +190,35 @@
 				params.append('smscode',this.user.smscode);
 				params.append('groupid',this.user.groupid);
 
+				this.$vux.toast.show({
+					text: '正在提交',
+					time:5000,
+					isShowMask:true,
+				});
+
 				this.$http.post(apiurl,params).then(res => {
+					this.$vux.toast.hide();
 					if (res.status === 200&&res.data.err_msg === 'error'){
-						this.login_showmessage = res.data.info
+						this.$vux.toast.show({
+							text: res.data.info,
+						});
+
 					}else{
-						this.login_showmessage = res.data.info;
-						router.replace('/')
+						var _this = this;
+						console.log(_this)
+						this.$vux.toast.show({
+							text: '注册成功',
+							time:1000,
+							onHide () {
+								router.replace('/')
+							}
+						});
 					}
 				}, res => {
-					this.login_showmessage = "网络错误，请稍后重试";
+					this.$vux.toast.hide()
+					this.$vux.toast.show({
+						text: '网络错误，请稍后重试',
+					});
 				});
 			},
 			showPlugin () {
@@ -291,6 +336,7 @@
 			},//检查用户名是否可用
 			sendMsgCode(){
 				let Namecfm = this.userComfirm.Namecfm;
+				let tips;
 				if (Namecfm == 'success'){
                     this.sendDisabled = true ; //让发送按钮禁用
                     //拼接参数及
@@ -301,12 +347,14 @@
 					params.append('phone',this.user.phonenum);
 
 					this.$http.post(apiurl,params).then(res => {
-						if (false && res.status === 200&&res.data.err_msg !== 'success'){
+						if (res.status === 200&&res.data.err_msg !== 'success'){
 							tips = res.data.info;
 							this.$vux.alert.show({
 								title: '提示',
 								content: tips,
-							})
+							});
+							this.sendDisabled = false ; //让发送按钮重新可以点击
+
 						}else{
 							let sendTime = 60;
 							let timer_this = this;
@@ -314,6 +362,7 @@
 								if (sendTime<0){
 									timer_this.sendBtnTitle = '发送验证码';
 									clearInterval(timer_this.sendBtnTimer);
+									this.sendDisabled = false ; //让发送按钮重新可以点击
 									return false;
 								}
 								timer_this.sendBtnTitle = sendTime+'s';
@@ -321,7 +370,6 @@
 							}
 							this.sendBtnTimer = setInterval(changeSendBtn,1000);
 						}
-						this.sendDisabled = false ; //让发送按钮重新可以点击
 					}, res => {
 						this.userComfirm.Namecfm = 'error';
 						tips = res;
@@ -342,11 +390,14 @@
 				let smsCode = this.user.smscode;
 				let re = /^\d{6}$/.test(smsCode);
 				let tips = '验证码为6位数字，请重新输入';
-				if (!re){
+				if (smsCode === ''){
+					this.userComfirm.Testcfm = 'error';
+				}else if (!re){
 					this.$vux.alert.show({
 						title: '提示',
 						content: tips,
 					});
+					this.userComfirm.Testcfm = 'error';
 				}else{
 
 					//拼接参数及
@@ -369,7 +420,9 @@
 					}, res => {
 						this.userComfirm.Phonecfm = 'error';
 						tips = res;
+
 						this.sendDisabled  = true;
+
 						this.$vux.alert.show({
 							title: '提示',
 							content: tips,
@@ -394,7 +447,17 @@
                 }else{
                     this.userComfirm.RePasscfm = 'error';
                 }
-            }
+            },
+			showToast(){
+            	var _this = this;
+				this.$vux.toast.show({
+				text: 'test',
+				time:5000,
+				onHide () {
+					console.log(_this)
+					}
+				})
+			}
 
 		}
 	}
@@ -421,5 +484,11 @@
 	}
 	.weui-btn_disabled.weui-btn_primary{
 		background-color: #ccc;
+	}
+	.vux-cell-box:before{
+		left: 0;
+	}
+	.weui-cells:after{
+		border-bottom:none!important;
 	}
 </style>

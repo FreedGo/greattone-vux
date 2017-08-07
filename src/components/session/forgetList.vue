@@ -33,9 +33,7 @@
 			</group>
 
 		</div>
-
 	</div>
-
 </template>
 
 <script>
