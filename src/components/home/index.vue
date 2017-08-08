@@ -49,23 +49,22 @@
 				</div>
 				<div class="mian-list">
 					<tab :line-width="1" custom-bar-width="26px">
-						<tab-item selected>
+						<tab-item @on-item-click="mainMenuPicke" selected>
 							<span >音乐广场</span>
 							<img src="../../assets/greattone/sanjiao.png">
 						</tab-item>
-						<tab-item>关注动态</tab-item>
-						<tab-item>热门动态</tab-item>
+						<tab-item @on-item-click="mainMenuPicke">关注动态</tab-item>
+						<tab-item @on-item-click="mainMenuPicke">热门动态</tab-item>
 					</tab>
 					<div v-transfer-dom>
-						<popup v-model="subGuang" position="top" :show-mask="true" :hide-on-blur="true" >
+						<popup class="" v-model="subGuang" position="top" height="60px" :show-mask="true"  :hide-on-blur="true" >
 							<div class="position-vertical-demo">
 								<checker
-									selected-item-class="demo4-item-selected"
-									disabled-item-class="demo4-item-disabled">
-									<checker-item value="花跟叶" @on-item-click="onItemClick">花跟叶</checker-item>
-									<checker-item value="鸟与树" @on-item-click="onItemClick">鸟与树</checker-item>
-									<checker-item value="我和你" @on-item-click="onItemClick">我和你</checker-item>
-									<checker-item value="全套礼品装" disabled @on-item-click="onItemClick">全套礼品装</checker-item>
+									selected-item-class="checker-item-selected">
+									<checker-item value="全部动态" @on-item-click="onItemClick">全部动态</checker-item>
+									<checker-item value="音乐新闻" @on-item-click="onItemClick">音乐新闻</checker-item>
+									<checker-item value="原创新闻" @on-item-click="onItemClick">原创新闻</checker-item>
+									<checker-item value="推荐帖"  @on-item-click="onItemClick">推荐帖</checker-item>
 								</checker>
 							</div>
 						</popup>
@@ -99,7 +98,7 @@
 				msg:'好琴声',
 				titleContent:'好琴声主页',
 				swipeList:[],//主轮播图列表
-				subGuang:true
+				subGuang:false, //音乐广场列表下子列表显示
 			}
 		},
 		components:{
@@ -128,10 +127,20 @@
 
 				})
 			},
-			onItemClick (value, disabled) {
-				console.log(value, disabled)
+			onItemClick (value) {
+				console.log(value )
 				if (!this.disabled) {
 					this.showPopup = false
+				}
+			},
+			mainMenuPicke(index){
+				switch(index){
+					case 0:this.subGuang = true;
+						break;
+					case 1:this.subGuang = true;
+						break;
+					case 2:this.subGuang = true;
+						break;
 				}
 			}
 		},
@@ -140,6 +149,8 @@
 </script>
 
 <style lang="less">
+	@import "../../../node_modules/vux/src/styles/variable.less";
+
 	#subapp{
 		background-color:#f2f2f5;
 		.main-menu{
@@ -160,6 +171,33 @@
 		.weui-grid{
 			padding:16px 2px 2px;
 		}
+
 	}
 
+	.vux-popup-dialog{
+		background-color: #fafafa!important;
+	}
+	
+	.position-vertical-demo{
+		.vux-checker-box{
+			margin-top: 15px;
+			display: flex;
+		}
+		.vux-checker-item{
+			flex: auto;
+			text-align: center;
+			margin-right: 5px;
+			margin-left: 5px;
+			height: 30px;
+			line-height:30px;
+			border-radius: 3px;
+			background-color: #F0F0F0;
+			/*width:20%;*/
+		}
+	    .vux-checker-item.checker-item-selected{
+		    background-color: @theme-color;
+		    color: #fff;
+	    }
+
+	}
 </style>
