@@ -56,7 +56,7 @@
 	Vue.use(AlertPlugin);
 	Vue.use(ToastPlugin);
 	const list = ['注册', '手机快捷注册'];
-    const apiurl = 'http://m.greattone.net/e/appapi/';
+    const apiurl = 'http://m.greattone.net/e/appapi';
 	export default {
 		name      : 'subapp',
 		computed:{

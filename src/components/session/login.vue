@@ -36,9 +36,9 @@
 <script>
 	import Vue from 'vue';
 	import router from '../../router/index';
+	import staticData from '@/components/static/data.js';
 	import heads from '@/components/header/header.vue';
 	import { XInput,Group,XButton, Flexbox, FlexboxItem, Divider,AjaxPlugin  } from 'vux';
-
 	Vue.use(AjaxPlugin);
 	export default {
 		name: 'subapp',
@@ -57,16 +57,15 @@
 			gtlogin(){
 				this.login_showmessage="正在登录";
 				var params = new URLSearchParams();
-				console.log(this.user)
 				params.append('username',this.user.username);
 				params.append('password',this.user.password);
 				params.append('api','user/login');
-				this.$http.post('http://m.greattone.net/e/appapi/',params).then(res => {
-					console.log(res)
+				this.$http.post(staticData.apiurl,params).then(res => {
 					if (res.status === 200&&res.data.err_msg === 'error'){
 						this.login_showmessage = res.data.info
 					}else{
 						this.login_showmessage = res.data.info;
+						sessionStorage.setItem('userdata',JSON.stringify(res.data.data));
 						router.replace('/')
 					}
 				}, res => {

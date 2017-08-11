@@ -23,14 +23,17 @@
 		/*overflow-x: hidden;*/
 	}
 	body {
-		background-color: #fff;
 		.weui-cell{
 			padding-left: 0;
 			left: 0!important;
 		}
 	}
+	#subapp{
+		background-color: #fff;
+	}
 	.main{
 		margin: 0 20px;
+		background-color:#fff;
 		.weui-cells:before{
 			border-top: none;
 

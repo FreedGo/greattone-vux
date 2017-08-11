@@ -4,9 +4,12 @@
  * GitHub:FreedGo@github.com.
  */
 
-let data = {};
-data.apiurl = 'http://test.greattone.net/e/appapi/';//api请求地址
+const ceshiapiurl = 'http://test.greattone.net/e/appapi/';
+const apiurl = '/e/appapi/';
 
+const data = {};
+data.ceshiapiurl = ceshiapiurl ;//api请求地址
+data.apiurl = apiurl;//api请求地址
 
 export default data;
 
